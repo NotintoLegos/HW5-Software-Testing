@@ -8,3 +8,6 @@ Overview:
 
         - Barnes:
         Barnes and Noble is simpler and stores book data in a seperate database. This includes 'book' object data,  price and amount.
+
+    The goal of this assignment is to create mock tests to simulate the integration of detached parts.
+    
