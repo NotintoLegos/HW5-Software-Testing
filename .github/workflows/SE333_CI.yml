@@ -4,10 +4,11 @@ on:
     branches:
       - main
 
-      
+
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,17 +18,13 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '23'
-
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
+          cahce: maven
 
       - name: Run Checkstyle (validate phase)
         run: mvn checkstyle:checkstyle -Dcheckstyle.failOnViolation=false
+
+      - name: Run tests with JaCoCo
+        run: mvn clean test
 
       - name: Upload Checkstyle report
         uses: actions/upload-artifact@v4
@@ -35,11 +32,8 @@ jobs:
           name: checkstyle-report
           path: target/checkstyle-result.xml
 
-      - name: Run tests with JaCoCo
-        run: mvn test
-
       - name: Upload JaCoCo report
         uses: actions/upload-artifact@v4
         with:
-          name: jacoco-report
+          name: jacoco-coverage-report
           path: target/site/jacoco/index.html
